@@ -6,117 +6,80 @@
     <meta name="robots" content="noindex,nofollow">
     <title>とりなまえバトル</title>
     <style>
-        /* 全体の背景設定：合言葉入力中も見えます */
         body { 
-            margin: 0; 
-            padding: 0; 
-            height: 100vh; 
+            margin: 0; padding: 0; height: 100vh; 
             background-image: url('images/bg.jpg'); 
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: hidden;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background-size: cover; background-position: center;
+            overflow: hidden; font-family: 'Arial Black', sans-serif;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* ゲーム画面全体を包む枠：合言葉が合うまで隠す */
         #game-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: row;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: row;
             visibility: hidden; 
         }
 
         .player-area { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
+            flex: 1; display: flex; flex-direction: column; 
+            align-items: center; justify-content: space-around; /* スコアとボタンを離して配置 */
+            padding: 20px 0;
         }
 
-        /* プレイヤーごとの向き調整 */
-        #p1 { transform: rotate(-90deg); } /* 左に90度 */
-        #p2 { transform: rotate(90deg); }  /* 右に90度 */
-
-        /* 中央エリア：背景を少し暗くして画像を見やすく */
         .center-area { 
-            width: 35%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+            width: 34%; display: flex; align-items: center; justify-content: center; 
             background: rgba(255, 255, 255, 0.2); 
             border-left: 2px solid rgba(255,255,255,0.3);
             border-right: 2px solid rgba(255,255,255,0.3);
         }
 
-        /* 中央の鳥の画像：プレイヤー1に合わせて左に90度 */
         #bird-image { 
-            width: 300px; 
-            height: 300px; 
-            object-fit: cover; 
-            border-radius: 25px;
-            border: 8px solid white;
+            width: 280px; height: 280px; object-fit: cover; 
+            border-radius: 20px; border: 8px solid white;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transform: rotate(-90deg); 
         }
 
-        /* ボタンのコンテナ */
-        .btn-container { display: flex; flex-direction: column; gap: 20px; width: 85%; }
+        /* ★スコアを見やすく復活（背景に負けないように枠線付き） */
+        .score-display {
+            font-size: 3.5rem; 
+            font-weight: 900; 
+            color: #ff6600; /* 目立つオレンジ */
+            -webkit-text-stroke: 2px white; /* 文字に白フチ */
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+        }
+
+        .btn-container { display: flex; flex-direction: column; gap: 15px; width: 85%; }
         
-        /* 選択ボタンのデザイン */
         .btn { 
-            padding: 25px 10px; 
-            font-size: 36px; 
-            font-weight: bold; 
-            color: #4a2e19; /* 木の板に合う茶色 */
-            border: none;
+            padding: 25px 10px; font-size: 32px; font-weight: bold; 
+            color: #4a2e19; border: none;
             background-image: url('images/btn_bg.png'); 
-            background-size: 100% 100%;
-            background-color: transparent;
+            background-size: 100% 100%; background-color: white;
             cursor: pointer;
-            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.2));
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
         }
 
-        .btn:active { transform: scale(0.95); }
+        .btn:active { transform: translateY(3px); box-shadow: none; }
 
-        #score1, #score2 { 
-            font-size: 3rem; 
-            font-weight: bold; 
-            color: white; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            margin-bottom: 30px; 
-        }
-
-        /* 勝利画面 */
         #result-screen { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); 
-            color: white; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            z-index: 1000; 
+            display: none; position: fixed; top: 0; left: 0; 
+            width: 100%; height: 100%; background: rgba(0,0,0,0.85); 
+            color: white; flex-direction: column; align-items: center; 
+            justify-content: center; z-index: 1000; 
         }
     </style>
 </head>
 <body>
 
     <div id="result-screen">
-        <h1 id="winner-text" style="font-size: 80px;">PLAYER 1 WIN!</h1>
+        <h1 id="winner-text" style="font-size: 80px; color: yellow;">PLAYER 1 WIN!</h1>
         <button onclick="location.reload()" style="padding:20px 50px; font-size:30px; border-radius:15px; cursor:pointer;">もういちど あそぶ</button>
     </div>
 
     <div id="game-container">
         <div id="p1" class="player-area">
-            <div id="score1">P1: 0/10</div>
+            <div id="score1" class="score-display">P1: 0/10</div>
             <div id="btns1" class="btn-container"></div>
         </div>
 
@@ -125,19 +88,18 @@
         </div>
 
         <div id="p2" class="player-area">
-            <div id="score2">P2: 0/10</div>
+            <div id="score2" class="score-display">P2: 0/10</div>
             <div id="btns2" class="btn-container"></div>
         </div>
     </div>
 
     <script>
-        // --- 設定エリア ---
-        const SECRET_KEY = "104"; // 合言葉
+        const SECRET_KEY = "104"; 
         const seCorrect = new Audio('sounds/correct.mp3'); 
-        const seWin = new Audio('sounds/fanfare.mp3'); // ファンファーレのファイル名を確認
+        const seWin = new Audio('sounds/fanfare.mp3');
 
         const birdList = [
-             { name: "アオサギ", image: "images/aosagi.jpg" },
+            { name: "アオサギ", image: "images/aosagi.jpg" },
             { name: "バン", image: "images/ban.jpg" },
             { name: "ドバト", image: "images/dobato.jpg" },
             { name: "ハッカチョウ", image: "images/hakkatyo.jpg" },
@@ -151,7 +113,7 @@
             { name: "カッコー", image: "images/kakko.jpg" },
             { name: "カルガモ", image: "images/karugamo.jpg" },
             { name: "カワラヒワ", image: "images/kawarahiwa.jpg" },
-            { name: "カワセミ", image: "images/kasasemi.jpg" },
+            { name: "カワセミ", image: "images/kawasemi.jpg" },
             { name: "キセキレイ", image: "images/kisekirei.jpg" },
             { name: "こぶとり", image: "images/kobutori.jpg" },
             { name: "コガモ", image: "images/kogamo.jpg" },
@@ -182,15 +144,14 @@
             { name: "ヨタカ", image: "images/yotaka.jpg" },
             { name: "ユリカモメ", image: "images/urikamome.jpg" },
             { name: "マガン", image: "images/magan.jpg" },
-
             { name: "コガモ", image: "images/kogamo.jpg" }
         ];
+
 
         let remainingBirds = [];
         let currentBird = null;
         let scores = { p1: 0, p2: 0 };
 
-        // --- 合言葉チェック ---
         function checkPassword() {
             const input = prompt("合言葉を入力してください");
             if (input === SECRET_KEY) {
@@ -202,19 +163,15 @@
             }
         }
 
-        // --- ゲーム管理 ---
         function initGame() {
             remainingBirds = [...birdList].sort(() => Math.random() - 0.5);
             nextQuestion();
         }
 
         function nextQuestion() {
-            if (remainingBirds.length === 0) {
-                remainingBirds = [...birdList].sort(() => Math.random() - 0.5);
-            }
+            if (remainingBirds.length === 0) remainingBirds = [...birdList].sort(() => Math.random() - 0.5);
             currentBird = remainingBirds.pop();
             document.getElementById('bird-image').src = currentBird.image;
-            
             const choices = generateChoices(currentBird.name);
             updateUI('btns1', choices, 'p1');
             updateUI('btns2', choices, 'p2');
@@ -222,24 +179,20 @@
 
         function generateChoices(correct) {
             let others = birdList.filter(b => b.name !== correct).sort(() => Math.random() - 0.5);
-            let combined = [correct, others[0].name, others[1].name, others[2].name];
-            return combined.sort(() => Math.random() - 0.5);
+            return [correct, others[0].name, others[1].name, others[2].name].sort(() => Math.random() - 0.5);
         }
 
         function updateUI(id, choices, p) {
-            const container = document.getElementById(id);
-            container.innerHTML = '';
+            const container = document.getElementById(id); container.innerHTML = '';
             choices.forEach(name => {
-                const btn = document.createElement('button');
-                btn.className = 'btn';
-                btn.innerText = name;
+                const btn = document.createElement('button'); btn.className = 'btn'; btn.innerText = name;
                 btn.onclick = () => {
                     if(name === currentBird.name) {
                         seCorrect.play();
                         scores[p]++;
                         updateScore();
                         if(scores[p] >= 10) {
-                            seWin.play(); // ファンファーレ
+                            seWin.play();
                             endGame(p);
                         } else {
                             nextQuestion();
@@ -255,9 +208,9 @@
             document.getElementById('score2').innerText = `P2: ${scores.p2}/10`;
         }
 
-        function endGame(winner) {
+        function endGame(w) {
             document.getElementById('result-screen').style.display = 'flex';
-            document.getElementById('winner-text').innerText = (winner === 'p1') ? "PLAYER 1 WIN!" : "PLAYER 2 WIN!";
+            document.getElementById('winner-text').innerText = (w === 'p1') ? "PLAYER 1 WIN!" : "PLAYER 2 WIN!";
         }
 
         window.onload = checkPassword;
